@@ -3,7 +3,6 @@
 *Your personal price tracking assistant.*
 
 [![Run Tests](https://github.com/KishanYern/PricePulse/actions/workflows/ci.yml/badge.svg)](https://github.com/KishanYern/PricePulse/actions/workflows/ci.yml)
-[![Deployed on Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-brightgreen)](https://trackyourproduct.netlify.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 PricePulse is a full-stack web application that allows you to track product prices from your favorite online stores. Simply add a product URL, and PricePulse will monitor it for you, keeping a history of its price changes. This way, you can make sure you're always getting the best deal.
@@ -11,7 +10,7 @@ PricePulse is a full-stack web application that allows you to track product pric
 ## ✨ Live Demo
 
 You can check out the live version of the application here:
-**[https://trackyourproduct.netlify.app/](https://trackyourproduct.netlify.app/)**
+**[https://pricepulselab.com/](https://pricepulselab.com/)**
 
 ## 🚀 Key Features
 
@@ -83,9 +82,10 @@ This level of customization ensures you only get the alerts that matter most to 
 
 The application is deployed with a modern, decoupled architecture:
 
--   **Frontend:** The React application is hosted on **Netlify**, providing a fast and reliable user experience.
--   **Backend:** The FastAPI backend and the database are deployed on **Render**, ensuring a scalable and secure infrastructure.
--   **Scheduled Tasks:** The daily product price updates are also handled by a scheduled worker on **Render**.
+-   **Frontend:** React is built into an immutable Docker image and served by nginx on EC2 with TLS.
+-   **Backend:** FastAPI runs in a Docker container on a private EC2 address.
+-   **Images:** GitHub Actions publishes frontend and backend images to Amazon ECR.
+-   **Deployment:** AWS Systems Manager Run Command deploys to EC2 without SSH.
 
 ### CI/CD
 
@@ -93,7 +93,9 @@ We use **GitHub Actions** for our Continuous Integration and Continuous Deployme
 
 -   **On every push** to the `main` branch, the workflow is triggered.
 -   **Automated Tests:** It automatically runs the complete test suite for both the backend (using `pytest`) and the frontend (using `vitest`).
--   **Continuous Deployment:** If all tests pass, the frontend is automatically deployed to Netlify.
+-   **Continuous Deployment:** On a successful push to `main`, GitHub authenticates to AWS through OIDC, publishes commit-tagged images to ECR, and deploys both services through SSM.
+
+See [AWS CI/CD setup](docs/aws-cicd.md) for infrastructure and repository variables.
 
 This setup ensures that the code is always in a deployable state and that new changes are integrated smoothly.
 
@@ -174,7 +176,7 @@ PricePulse includes a background task that automatically updates the prices of a
 - [ ] **User-Facing Admin Dashboard:** Create a dedicated UI for administrators to manage users and products.
 - [ ] **Price Alert History:** Allow users to see a history of when price alerts were triggered for their tracked products.
 - [ ] **Improve Scraper Robustness:** Enhance the web scraper to handle a wider variety of e-commerce site layouts and improve its reliability.
-- [ ] **Docker Support:** Create `Dockerfile` and `docker-compose.yml` configurations for easier development and deployment.
+- [x] **Docker Support:** Production Dockerfiles are used by the AWS CI/CD workflow.
 
 ## 📄 License
 
